@@ -1,0 +1,17 @@
+{
+  "name": "@robireton/redcap",
+  "version": "0.1.0",
+  "description": "opinionated, zero-dependency REDCap API implementation as ECMAScript module",
+  "type": "module",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robireton/redcap.git"
+  },
+  "author": "Rob Ireton <rob@ireton.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/robireton/redcap/issues"
+  },
+  "homepage": "https://github.com/robireton/redcap#readme"
+}
