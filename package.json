@@ -1,9 +1,9 @@
 {
   "name": "@robireton/redcap",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "opinionated, zero-dependency REDCap API implementation as ECMAScript module",
   "type": "module",
-  "main": "index.js",
+  "exports": "./index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/robireton/redcap.git"
