@@ -1,7 +1,7 @@
 {
   "name": "@robireton/redcap",
-  "version": "0.1.1",
-  "description": "opinionated, zero-dependency REDCap API implementation as ECMAScript module",
+  "version": "0.2.0",
+  "description": "opinionated, JSON-only, zero-dependency REDCap API implementation as ECMAScript module",
   "type": "module",
   "exports": "./index.js",
   "repository": {

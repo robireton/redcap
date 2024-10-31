@@ -1,168 +1,157 @@
-export async function version (endpoint, token) {
+const defaultHeaders = {
+  Accept: 'application/json',
+  'Content-Type': 'application/x-www-form-urlencoded'
+}
+
+function makeParams (options) {
   const params = new URLSearchParams()
-  params.append('content', 'version')
-  params.append('token', token)
+  for (const [option, value] of Object.entries(options)) {
+    if (Array.isArray(value)) {
+      value.forEach((element, index) => params.append(`${option}[${index}]`, element))
+    } else {
+      params.append(option, value)
+    }
+  }
+  if (process.env.VERBOSE) console.log(params)
+  return params
+}
+
+export async function getVersion (endpoint, token) {
   const response = await fetch(endpoint, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: params
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: makeParams({ content: 'version', token })
   })
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
   return await response.text()
 }
 
-export async function project (endpoint, token) {
-  const params = new URLSearchParams()
-  params.append('content', 'project')
-  params.append('format', 'json')
-  params.append('token', token)
+export async function getProject (endpoint, token) {
   const response = await fetch(endpoint, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: params
+    headers: defaultHeaders,
+    body: makeParams({ content: 'project', format: 'json', token })
   })
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
   return await response.json()
 }
 
-export async function metadata (endpoint, token) {
-  const params = new URLSearchParams()
-  params.append('content', 'metadata')
-  params.append('format', 'json')
-  params.append('token', token)
+export async function getMetadata (endpoint, token, options = {}) {
+  options.token = token
+  options.content = 'metadata'
+  options.format = 'json'
+
   const response = await fetch(endpoint, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: params
+    headers: defaultHeaders,
+    body: makeParams(options)
   })
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
   return await response.json()
 }
 
-export async function records (endpoint, token) {
-  const params = new URLSearchParams()
-  params.append('content', 'record')
-  params.append('format', 'json')
-  params.append('type', 'flat')
-  // params.append('type', 'eav')
-  params.append('token', token)
+export async function getRecords (endpoint, token, options = {}) {
+  options.token = token
+  options.content = 'record'
+  options.format = 'json'
+  if (!('type' in options)) options.type = 'flat'
+
   const response = await fetch(endpoint, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: params
+    headers: defaultHeaders,
+    body: makeParams(options)
   })
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
   return await response.json()
 }
 
-export async function events (endpoint, token) {
-  const params = new URLSearchParams()
-  params.append('content', 'event')
-  params.append('format', 'json')
-  params.append('token', token)
+export async function getEvents (endpoint, token, options = {}) {
+  options.token = token
+  options.content = 'event'
+  options.format = 'json'
+
   const response = await fetch(endpoint, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: params
+    headers: defaultHeaders,
+    body: makeParams(options)
   })
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
   return await response.json()
 }
 
-export async function arms (endpoint, token) {
-  const params = new URLSearchParams()
-  params.append('content', 'arm')
-  params.append('format', 'json')
-  params.append('token', token)
+export async function getArms (endpoint, token, options = {}) {
+  options.token = token
+  options.content = 'arm'
+  options.format = 'json'
+
   const response = await fetch(endpoint, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: params
+    headers: defaultHeaders,
+    body: makeParams(options)
   })
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
   return await response.json()
 }
 
-export async function fields (endpoint, token) {
-  const params = new URLSearchParams()
-  params.append('content', 'exportFieldNames')
-  params.append('format', 'json')
-  params.append('token', token)
+export async function getFields (endpoint, token, options = {}) {
+  options.token = token
+  options.content = 'exportFieldNames'
+  options.format = 'json'
+
   const response = await fetch(endpoint, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: params
+    headers: defaultHeaders,
+    body: makeParams(options)
   })
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
   return await response.json()
 }
 
-export async function instruments (endpoint, token) {
-  const params = new URLSearchParams()
-  params.append('content', 'instrument')
-  params.append('format', 'json')
-  params.append('token', token)
+export async function getInstruments (endpoint, token) {
   const response = await fetch(endpoint, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: params
+    headers: defaultHeaders,
+    body: makeParams({ content: 'instrument', format: 'json', token })
   })
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
   return await response.json()
 }
 
-export async function mapping (endpoint, token) {
-  const params = new URLSearchParams()
-  params.append('content', 'formEventMapping')
-  params.append('format', 'json')
-  params.append('token', token)
+export async function getMapping (endpoint, token, options = {}) {
+  options.token = token
+  options.content = 'formEventMapping'
+  options.format = 'json'
+
   const response = await fetch(endpoint, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: params
+    headers: defaultHeaders,
+    body: makeParams(options)
   })
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
   return await response.json()
 }
 
-export async function repeating (endpoint, token) {
-  const params = new URLSearchParams()
-  params.append('content', 'repeatingFormsEvents')
-  params.append('format', 'json')
-  params.append('token', token)
+export async function getRepeating (endpoint, token) {
   const response = await fetch(endpoint, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: params
+    headers: defaultHeaders,
+    body: makeParams({ content: 'repeatingFormsEvents', format: 'json', token })
+  })
+  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
+  return await response.json()
+}
+
+export async function putRecords (endpoint, token, data, options = {}) {
+  options.token = token
+  options.content = 'record'
+  options.format = 'json'
+  if (!('type' in options)) options.type = 'flat'
+  options.data = JSON.stringify(Array.isArray(data) ? data : [data])
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: defaultHeaders,
+    body: makeParams(options)
   })
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
   return await response.json()

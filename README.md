@@ -4,8 +4,7 @@
 [![current version](https://img.shields.io/npm/v/@robireton/redcap)](https://www.npmjs.com/package/@robireton/redcap)
 [![install size](https://packagephobia.com/badge?p=@robireton/redcap)](https://packagephobia.com/result?p=@robireton/redcap)
 
-
-*an opinionated, zero-dependency REDCap API implementation as an ECMAScript module*
+*an opinionated, , JSON-only, zero-dependency REDCap API implementation as an ECMAScript module*
 
 ## Usage
 
@@ -20,25 +19,30 @@ import * as redcap from '@robireton/redcap'
 | ---- | ----- |
 | `endpoint` | a URL or string to connect to – *e.g.* `https://redcap.server.org/api/` |
 | `token` | the API token specific to your REDCap project and username (each token is unique to each user for each project) |
+| `options` | an object with optional parameters for REDCap API calls |
 
 ## Exports
 
-### *async* function `version` (endpoint, token)
+### *async* function `getVersion` (endpoint, token)
 
-### *async* function `project` (endpoint, token)
+returns the current REDCap version number as plain text (e.g., 4.13.18, 5.12.2, 6.0.0)
 
-### *async* function `metadata` (endpoint, token)
+### *async* function `getProject` (endpoint, token)
 
-### *async* function `records` (endpoint, token)
+### *async* function `getMetadata` (endpoint, token, options = {})
 
-### *async* function `events` (endpoint, token)
+### *async* function `getRecords` (endpoint, token, options = {})
 
-### *async* function `arms` (endpoint, token)
+### *async* function `getEvents` (endpoint, token, options = {})
 
-### *async* function `fields` (endpoint, token)
+### *async* function `getArms` (endpoint, token, options = {})
 
-### *async* function `instruments` (endpoint, token)
+### *async* function `getFields` (endpoint, token, options = {})
 
-### *async* function `mapping` (endpoint, token)
+### *async* function `getInstruments` (endpoint, token)
 
-### *async* function `repeating` (endpoint, token)
+### *async* function `getMapping` (endpoint, token, options = {})
+
+### *async* function `getRepeating` (endpoint, token)
+
+### *async* function `putRecords` (endpoint, token, data, options = {})
