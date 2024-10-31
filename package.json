@@ -4,6 +4,7 @@
   "description": "opinionated, JSON-only, zero-dependency REDCap API implementation as ECMAScript module",
   "type": "module",
   "exports": "./index.js",
+  "files": ["index.js"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/robireton/redcap.git"
