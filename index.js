@@ -1,8 +1,3 @@
-const defaultHeaders = {
-  Accept: 'application/json',
-  'Content-Type': 'application/x-www-form-urlencoded'
-}
-
 function makeParams (options) {
   const params = new URLSearchParams()
   for (const [option, value] of Object.entries(options)) {
@@ -12,147 +7,90 @@ function makeParams (options) {
       params.append(option, value)
     }
   }
-  if (process.env.VERBOSE) console.log(params)
+  if (process.env.NODE_ENV === 'debug') console.log(params)
   return params
 }
 
-export async function getVersion (endpoint, token) {
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: makeParams({ content: 'version', token })
-  })
-  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
-  return await response.text()
-}
+export default class REDCapAPI {
+  #endpoint
+  #token
 
-export async function getProject (endpoint, token) {
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: defaultHeaders,
-    body: makeParams({ content: 'project', format: 'json', token })
-  })
-  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
-  return await response.json()
-}
+  constructor (endpoint, token) {
+    if (!(typeof endpoint === 'string' || endpoint instanceof URL || endpoint instanceof Request)) throw new TypeError('bad endpoint')
+    if (typeof token !== 'string' || token.length === 0) throw new TypeError('bad token')
+    this.#endpoint = ((typeof endpoint === 'string') ? (new URL(endpoint)) : endpoint)
+    this.#token = token
+  }
 
-export async function getMetadata (endpoint, token, options = {}) {
-  options.token = token
-  options.content = 'metadata'
-  options.format = 'json'
+  async #call (options, headers = { Accept: 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' }) {
+    options.format = 'json'
+    options.token = this.#token
+    const response = await fetch(this.#endpoint, {
+      method: 'POST',
+      headers,
+      body: makeParams(options)
+    })
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
+    return await response.json()
+  }
 
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: defaultHeaders,
-    body: makeParams(options)
-  })
-  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
-  return await response.json()
-}
+  async version () {
+    const response = await fetch(this.#endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: makeParams({ content: 'version', token: this.#token })
+    })
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
+    return await response.text()
+  }
 
-export async function getRecords (endpoint, token, options = {}) {
-  options.token = token
-  options.content = 'record'
-  options.format = 'json'
-  if (!('type' in options)) options.type = 'flat'
+  async project () {
+    return await this.#call({ content: 'project' })
+  }
 
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: defaultHeaders,
-    body: makeParams(options)
-  })
-  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
-  return await response.json()
-}
+  async instruments () {
+    return await this.#call({ content: 'instrument' })
+  }
 
-export async function getEvents (endpoint, token, options = {}) {
-  options.token = token
-  options.content = 'event'
-  options.format = 'json'
+  async repeating () {
+    return await this.#call({ content: 'repeatingFormsEvents' })
+  }
 
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: defaultHeaders,
-    body: makeParams(options)
-  })
-  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
-  return await response.json()
-}
+  async metadata (options = {}) {
+    options.content = 'metadata'
+    return await this.#call(options)
+  }
 
-export async function getArms (endpoint, token, options = {}) {
-  options.token = token
-  options.content = 'arm'
-  options.format = 'json'
+  async records (options = {}) {
+    options.content = 'record'
+    if (!('type' in options)) options.type = 'flat'
+    return await this.#call(options)
+  }
 
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: defaultHeaders,
-    body: makeParams(options)
-  })
-  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
-  return await response.json()
-}
+  async events (options = {}) {
+    options.content = 'event'
+    return await this.#call(options)
+  }
 
-export async function getFields (endpoint, token, options = {}) {
-  options.token = token
-  options.content = 'exportFieldNames'
-  options.format = 'json'
+  async arms (options = {}) {
+    options.content = 'arm'
+    return await this.#call(options)
+  }
 
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: defaultHeaders,
-    body: makeParams(options)
-  })
-  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
-  return await response.json()
-}
+  async fields (options = {}) {
+    options.content = 'exportFieldNames'
+    return await this.#call(options)
+  }
 
-export async function getInstruments (endpoint, token) {
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: defaultHeaders,
-    body: makeParams({ content: 'instrument', format: 'json', token })
-  })
-  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
-  return await response.json()
-}
+  async mapping (options = {}) {
+    options.content = 'formEventMapping'
+    return await this.#call(options)
+  }
 
-export async function getMapping (endpoint, token, options = {}) {
-  options.token = token
-  options.content = 'formEventMapping'
-  options.format = 'json'
-
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: defaultHeaders,
-    body: makeParams(options)
-  })
-  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
-  return await response.json()
-}
-
-export async function getRepeating (endpoint, token) {
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: defaultHeaders,
-    body: makeParams({ content: 'repeatingFormsEvents', format: 'json', token })
-  })
-  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
-  return await response.json()
-}
-
-export async function putRecords (endpoint, token, data, options = {}) {
-  options.token = token
-  options.content = 'record'
-  options.format = 'json'
-  if (!('type' in options)) options.type = 'flat'
-  options.data = JSON.stringify(Array.isArray(data) ? data : [data])
-
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: defaultHeaders,
-    body: makeParams(options)
-  })
-  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
-  return await response.json()
+  async write (data, options = {}) {
+    options.content = 'record'
+    if (!('type' in options)) options.type = 'flat'
+    options.data = JSON.stringify(Array.isArray(data) ? data : [data])
+    return await this.#call(options)
+  }
 }

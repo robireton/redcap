@@ -6,43 +6,44 @@
 
 *an opinionated, , JSON-only, zero-dependency REDCap API implementation as an ECMAScript module*
 
-## Usage
-
-### import everything
+## Example
 ```js
-import * as redcap from '@robireton/redcap'
+import REDCapAPI from '@robireton/redcap'
+
+const endpoint = process.env.REDCAP_ENDPOINT
+const token = process.env.REDCAP_TOKEN
+
+const myProject = new REDCapAPI(endpoint, token)
+console.log(await myProject.metadata())
 ```
 
-### Common Parameters
+## Constructor
+
+### `REDCapAPI`(*endpoint*, *token*)
 
 | name | value |
 | ---- | ----- |
 | `endpoint` | a URL or string to connect to – *e.g.* `https://redcap.server.org/api/` |
 | `token` | the API token specific to your REDCap project and username (each token is unique to each user for each project) |
-| `options` | an object with optional parameters for REDCap API calls |
 
-## Exports
 
-### *async* function `getVersion` (endpoint, token)
+## Instance methods
+
+| name | value |
+| ---- | ----- |
+| `options` | an optional object with extra parameters for REDCap API calls |
+
+### *async* `version`()
 
 returns the current REDCap version number as plain text (e.g., 4.13.18, 5.12.2, 6.0.0)
 
-### *async* function `getProject` (endpoint, token)
-
-### *async* function `getMetadata` (endpoint, token, options = {})
-
-### *async* function `getRecords` (endpoint, token, options = {})
-
-### *async* function `getEvents` (endpoint, token, options = {})
-
-### *async* function `getArms` (endpoint, token, options = {})
-
-### *async* function `getFields` (endpoint, token, options = {})
-
-### *async* function `getInstruments` (endpoint, token)
-
-### *async* function `getMapping` (endpoint, token, options = {})
-
-### *async* function `getRepeating` (endpoint, token)
-
-### *async* function `putRecords` (endpoint, token, data, options = {})
+### *async*  `project` ()
+### *async*  `metadata` (*options*)
+### *async*  `records` (*options*)
+### *async*  `events` (*options*)
+### *async*  `arms` (*options*)
+### *async*  `fields` (*options*)
+### *async*  `instruments` ()
+### *async*  `mapping` (*options*)
+### *async*  `repeating` ()
+### *async*  `write` (data, *options*)
