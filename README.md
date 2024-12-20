@@ -4,7 +4,7 @@
 [![current version](https://img.shields.io/npm/v/@robireton/redcap)](https://www.npmjs.com/package/@robireton/redcap)
 [![install size](https://packagephobia.com/badge?p=@robireton/redcap)](https://packagephobia.com/result?p=@robireton/redcap)
 
-*an opinionated, , JSON-only, zero-dependency REDCap API implementation as an ECMAScript module*
+*an opinionated, JSON-only, zero-dependency REDCap API implementation as an ECMAScript module*
 
 ## Example
 ```js
@@ -47,3 +47,5 @@ returns the current REDCap version number as plain text (e.g., 4.13.18, 5.12.2, 
 ### *async*  `mapping` (*options*)
 ### *async*  `repeating` ()
 ### *async*  `write` (data, *options*)
+### *async*  `file` (*options*)
+### *async*  `upload` (file, *options*)

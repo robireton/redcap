@@ -93,4 +93,42 @@ export default class REDCapAPI {
     options.data = JSON.stringify(Array.isArray(data) ? data : [data])
     return await this.#call(options)
   }
+
+  async file (options = {}) {
+    if (!('record' in options)) throw new TypeError('options must specify “record”')
+    if (!('field' in options)) throw new TypeError('options must specify “field”')
+    options.token = this.#token
+    options.content = 'file'
+    options.action = 'export'
+    const response = await fetch(this.#endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: makeParams(options)
+    })
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
+    const re = /^(?<type>[^;]+); name="(?<name>.+)"$/gi
+    const match = re.exec(response.headers.get('content-type'))
+    const bytes = await response.blob()
+    return new File([bytes], match.groups.name, { type: match.groups.type })
+  }
+
+  async upload (file, options = {}) {
+    if (!(file instanceof File)) throw new TypeError('file must be an instance of File')
+    if (!('record' in options)) throw new TypeError('options must specify “record”')
+    if (!('field' in options)) throw new TypeError('options must specify “field”')
+    options.token = this.#token
+    options.content = 'file'
+    options.action = 'import'
+    options.file = file
+    const data = new FormData()
+    for (const [name, value] of Object.entries(options)) {
+      data.append(name, value)
+    }
+    const response = await fetch(this.#endpoint, {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: data
+    })
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`)
+  }
 }
