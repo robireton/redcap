@@ -38,12 +38,66 @@ console.log(await myProject.metadata())
 returns the current REDCap version number as plain text (e.g., 4.13.18, 5.12.2, 6.0.0)
 
 ### *async*  `project` ()
+
+returns an object with the following fields:
+
+* `project_id`
+* `project_title`
+* `creation_time`
+* `production_time`
+* `in_production`
+* `project_language`
+* `purpose`
+* `purpose_other`
+* `project_notes`
+* `custom_record_label`
+* `secondary_unique_field`
+* `is_longitudinal`
+* `has_repeating_instruments_or_events`
+* `surveys_enabled`
+* `scheduling_enabled`
+* `record_autonumbering_enabled`
+* `randomization_enabled`
+* `ddp_enabled`
+* `project_irb_number`
+* `project_grant_number`
+* `project_pi_firstname`
+* `project_pi_lastname`
+* `display_today_now_button`
+* `missing_data_codes`
+* `external_modules`
+* `bypass_branching_erase_field_prompt`
+
 ### *async*  `metadata` (*options*)
+
+returns an array of data dictionary objects
+
+#### options
+* `fields`: an array of field names specifying specific fields you wish to pull (default: all fields)
+* `forms`: an array of form names specifying specific data collection instruments for which you wish to pull metadata (default: all instruments)
+
 ### *async*  `records` (*options*)
+
+returns an array of record objects
+
+#### options
+* `type`: `flat` (default) — *one record per row* or `eav` — *one data point per row*
+* `records`: an array of record names specifying specific fields you wish to pull (default: all records)
+* `fields`: an array of field names specifying specific fields you wish to pull (default: all fields)
+* `forms`: an array of form names specifying specific data collection instruments for which you wish to pull metadata (default: all instruments)
+* `events`: an array of unique event names that you wish to pull records for (longitudinal projects only)
+* more… *c.f.* full REDCap API specification
+
 ### *async*  `events` (*options*)
 ### *async*  `arms` (*options*)
 ### *async*  `fields` (*options*)
+
+Returns an array of the export/import-specific version of field name objects for all fields (or for one field, if desired). Each object will contain: `original_field_name`, `choice_value`, and `export_field_name`. The `choice_value` attribute represents the raw coded value for a checkbox choice. For non-checkbox fields, the `choice_value` attribute will always be blank/empty. The `export_field_name` attribute represents the export/import-specific version of that field name.
+
 ### *async*  `instruments` ()
+
+returns an array of instrument (Data Entry Form) objects
+
 ### *async*  `mapping` (*options*)
 ### *async*  `repeating` ()
 ### *async*  `write` (data, *options*)
