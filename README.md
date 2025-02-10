@@ -6,19 +6,25 @@
 
 classes for interacting with [REDCap](https://projectredcap.org/) projects
 
+* [REDCapAPI](#redcapapi)
+* [REDCapProject](#redcapproject)
+* [REDCapProjectInformation](#redcapprojectinformation)
+* [REDCapField](#redcapfield)
+* [REDCapDatetime](#redcapdatetime)
+
 ## REDCapAPI
 
 *an opinionated, JSON-only, zero-dependency REDCap API implementation as an ECMAScript module*
 
 ### Example
 ```js
-import REDCapAPI from '@robireton/redcap'
+import REDCapAPI from '@robireton/redcap/api'
 
 const endpoint = process.env.REDCAP_ENDPOINT
 const token = process.env.REDCAP_TOKEN
 
-const myProject = new REDCapAPI(endpoint, token)
-console.log(await myProject.metadata())
+const project = new REDCapAPI(endpoint, token)
+console.log(await project.metadata())
 ```
 
 ### Constructor
@@ -107,3 +113,48 @@ returns an array of instrument (Data Entry Form) objects
 #### *async*  `write` (data, *options*)
 #### *async*  `file` (*options*)
 #### *async*  `upload` (file, *options*)
+
+
+## REDCapProject
+
+*class for working with project structure and data; uses [REDCapAPI](#redcapapi) or local JSON files*
+
+### Example
+```js
+import REDCapAPI from '@robireton/redcap/project'
+
+const endpoint = process.env.REDCAP_ENDPOINT
+const token = process.env.REDCAP_TOKEN
+
+const project = new REDCapProject(endpoint, token)
+await project.populate()
+
+console.log(project.info.id)
+for (const record of project.records) {
+  …
+}
+```
+
+### Constructor
+
+#### `REDCapProject`(*endpoint*, *token*)
+
+| name | value |
+| ---- | ----- |
+| `endpoint` | a URL or string to connect to – *e.g.* `https://redcap.server.org/api/` |
+| `token` | the API token specific to your REDCap project and username (each token is unique to each user for each project) |
+
+Alternately, if `endpoint`/`token` resolves to an existing filesystem folder with appropriately-named JSON files, these will be used instead of [REDCapAPI](#redcapapi).
+
+### Instance methods
+
+#### *async* `populate` ()
+
+This must be run before any instance members are accessible.
+
+
+## REDCapProjectInformation
+
+## REDCapField
+
+## REDCapDatetime
