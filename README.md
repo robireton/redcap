@@ -1,25 +1,35 @@
-# REDCap API
+# REDCap
 
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![current version](https://img.shields.io/npm/v/@robireton/redcap)](https://www.npmjs.com/package/@robireton/redcap)
 [![install size](https://packagephobia.com/badge?p=@robireton/redcap)](https://packagephobia.com/result?p=@robireton/redcap)
 
+classes for interacting with [REDCap](https://projectredcap.org/) projects
+
+* [REDCapAPI](#redcapapi)
+* [REDCapProject](#redcapproject)
+* [REDCapProjectInformation](#redcapprojectinformation)
+* [REDCapField](#redcapfield)
+* [REDCapDatetime](#redcapdatetime)
+
+## REDCapAPI
+
 *an opinionated, JSON-only, zero-dependency REDCap API implementation as an ECMAScript module*
 
-## Example
+### Example
 ```js
-import REDCapAPI from '@robireton/redcap'
+import REDCapAPI from '@robireton/redcap/api'
 
 const endpoint = process.env.REDCAP_ENDPOINT
 const token = process.env.REDCAP_TOKEN
 
-const myProject = new REDCapAPI(endpoint, token)
-console.log(await myProject.metadata())
+const project = new REDCapAPI(endpoint, token)
+console.log(await project.metadata())
 ```
 
-## Constructor
+### Constructor
 
-### `REDCapAPI`(*endpoint*, *token*)
+#### `REDCapAPI`(*endpoint*, *token*)
 
 | name | value |
 | ---- | ----- |
@@ -27,17 +37,17 @@ console.log(await myProject.metadata())
 | `token` | the API token specific to your REDCap project and username (each token is unique to each user for each project) |
 
 
-## Instance methods
+### Instance methods
 
 | name | value |
 | ---- | ----- |
 | `options` | an optional object with extra parameters for REDCap API calls |
 
-### *async* `version`()
+#### *async* `version`()
 
 returns the current REDCap version number as plain text (e.g., 4.13.18, 5.12.2, 6.0.0)
 
-### *async*  `project` ()
+#### *async*  `project` ()
 
 returns an object with the following fields:
 
@@ -68,19 +78,19 @@ returns an object with the following fields:
 * `external_modules`
 * `bypass_branching_erase_field_prompt`
 
-### *async*  `metadata` (*options*)
+#### *async*  `metadata` (*options*)
 
 returns an array of data dictionary objects
 
-#### options
+##### options
 * `fields`: an array of field names specifying specific fields you wish to pull (default: all fields)
 * `forms`: an array of form names specifying specific data collection instruments for which you wish to pull metadata (default: all instruments)
 
-### *async*  `records` (*options*)
+#### *async*  `records` (*options*)
 
 returns an array of record objects
 
-#### options
+##### options
 * `type`: `flat` (default) — *one record per row* or `eav` — *one data point per row*
 * `records`: an array of record names specifying specific fields you wish to pull (default: all records)
 * `fields`: an array of field names specifying specific fields you wish to pull (default: all fields)
@@ -88,18 +98,63 @@ returns an array of record objects
 * `events`: an array of unique event names that you wish to pull records for (longitudinal projects only)
 * more… *c.f.* full REDCap API specification
 
-### *async*  `events` (*options*)
-### *async*  `arms` (*options*)
-### *async*  `fields` (*options*)
+#### *async*  `events` (*options*)
+#### *async*  `arms` (*options*)
+#### *async*  `fields` (*options*)
 
 Returns an array of the export/import-specific version of field name objects for all fields (or for one field, if desired). Each object will contain: `original_field_name`, `choice_value`, and `export_field_name`. The `choice_value` attribute represents the raw coded value for a checkbox choice. For non-checkbox fields, the `choice_value` attribute will always be blank/empty. The `export_field_name` attribute represents the export/import-specific version of that field name.
 
-### *async*  `instruments` ()
+#### *async*  `instruments` ()
 
 returns an array of instrument (Data Entry Form) objects
 
-### *async*  `mapping` (*options*)
-### *async*  `repeating` ()
-### *async*  `write` (data, *options*)
-### *async*  `file` (*options*)
-### *async*  `upload` (file, *options*)
+#### *async*  `mapping` (*options*)
+#### *async*  `repeating` ()
+#### *async*  `write` (data, *options*)
+#### *async*  `file` (*options*)
+#### *async*  `upload` (file, *options*)
+
+
+## REDCapProject
+
+*class for working with project structure and data; uses [REDCapAPI](#redcapapi) or local JSON files*
+
+### Example
+```js
+import REDCapAPI from '@robireton/redcap/project'
+
+const endpoint = process.env.REDCAP_ENDPOINT
+const token = process.env.REDCAP_TOKEN
+
+const project = new REDCapProject(endpoint, token)
+await project.populate()
+
+console.log(project.info.id)
+for (const record of project.records) {
+  …
+}
+```
+
+### Constructor
+
+#### `REDCapProject`(*endpoint*, *token*)
+
+| name | value |
+| ---- | ----- |
+| `endpoint` | a URL or string to connect to – *e.g.* `https://redcap.server.org/api/` |
+| `token` | the API token specific to your REDCap project and username (each token is unique to each user for each project) |
+
+Alternately, if `endpoint`/`token` resolves to an existing filesystem folder with appropriately-named JSON files, these will be used instead of [REDCapAPI](#redcapapi).
+
+### Instance methods
+
+#### *async* `populate` ()
+
+This must be run before any instance members are accessible.
+
+
+## REDCapProjectInformation
+
+## REDCapField
+
+## REDCapDatetime
