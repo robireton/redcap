@@ -1,5 +1,6 @@
 export { default as REDCapAPI } from './lib/api.js'
 export { default as REDCapDatetime } from './lib/datetime.js'
 export { default as REDCapField } from './lib/field.js'
+export { default as REDCapInstrument } from './lib/instrument.js'
 export { default as REDCapProjectInformation } from './lib/info.js'
 export { default as REDCapProject } from './lib/project.js'
