@@ -10,6 +10,7 @@ classes for interacting with [REDCap](https://projectredcap.org/) projects
 * [REDCapProject](#redcapproject)
 * [REDCapProjectInformation](#redcapprojectinformation)
 * [REDCapField](#redcapfield)
+* [REDCapInstrument](#redcapinstrument)
 * [REDCapDatetime](#redcapdatetime)
 
 ## REDCapAPI
@@ -129,9 +130,12 @@ const token = process.env.REDCAP_TOKEN
 const project = new REDCapProject(endpoint, token)
 await project.populate()
 
-console.log(project.info.id)
-for (const record of project.records) {
-  …
+console.log(project.info.title)
+for (const instrument of project.instruments) {
+  console.log(instrument.label)
+  for (const record of instrument.records) {
+    …
+  }
 }
 ```
 
@@ -152,9 +156,14 @@ Alternately, if `endpoint`/`token` resolves to an existing filesystem folder wit
 
 This must be run before any instance members are accessible.
 
+#### `getInstrument` (*name*)
+
+returns a [REDCapInstrument](#redcapinstrument) object, which includes the records
 
 ## REDCapProjectInformation
 
 ## REDCapField
+
+## REDCapInstrument
 
 ## REDCapDatetime
