@@ -35,5 +35,9 @@
   "bugs": {
     "url": "https://github.com/robireton/redcap/issues"
   },
-  "homepage": "https://github.com/robireton/redcap#readme"
+  "homepage": "https://github.com/robireton/redcap#readme",
+  "devDependencies": {
+    "eslint": "^9.39.4",
+    "neostandard": "^0.13.0"
+  }
 }
