@@ -6,6 +6,8 @@
 
 classes for interacting with [REDCap](https://projectredcap.org/) projects
 
+requires Node.js 22 or later; no runtime dependencies
+
 * [REDCapAPI](#redcapapi)
 * [REDCapProject](#redcapproject)
 * [REDCapProjectInformation](#redcapprojectinformation)
