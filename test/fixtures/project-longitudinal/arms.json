@@ -1,0 +1,4 @@
+[
+  { "arm_num": 1, "name": "Treatment" },
+  { "arm_num": 2, "name": "Control" }
+]

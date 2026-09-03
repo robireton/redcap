@@ -1,0 +1,20 @@
+[
+  { "record": "1", "redcap_event_name": "baseline_arm_1", "redcap_repeat_instrument": "", "redcap_repeat_instance": "", "field_name": "record_id", "value": "1" },
+  { "record": "1", "redcap_event_name": "baseline_arm_1", "redcap_repeat_instrument": "", "redcap_repeat_instance": "", "field_name": "sex", "value": "1" },
+  { "record": "1", "redcap_event_name": "baseline_arm_1", "redcap_repeat_instrument": "", "redcap_repeat_instance": "", "field_name": "demographics_complete", "value": "2" },
+  { "record": "1", "redcap_event_name": "baseline_arm_1", "redcap_repeat_instrument": "visit", "redcap_repeat_instance": "1", "field_name": "visit_date", "value": "2023-10-02" },
+  { "record": "1", "redcap_event_name": "baseline_arm_1", "redcap_repeat_instrument": "visit", "redcap_repeat_instance": "1", "field_name": "systolic", "value": "128" },
+  { "record": "1", "redcap_event_name": "baseline_arm_1", "redcap_repeat_instrument": "visit", "redcap_repeat_instance": "1", "field_name": "adverse", "value": "0" },
+  { "record": "1", "redcap_event_name": "baseline_arm_1", "redcap_repeat_instrument": "visit", "redcap_repeat_instance": "1", "field_name": "visit_complete", "value": "2" },
+  { "record": "1", "redcap_event_name": "baseline_arm_1", "redcap_repeat_instrument": "visit", "redcap_repeat_instance": "2", "field_name": "visit_date", "value": "2023-10-16" },
+  { "record": "1", "redcap_event_name": "baseline_arm_1", "redcap_repeat_instrument": "visit", "redcap_repeat_instance": "2", "field_name": "systolic", "value": "134" },
+  { "record": "1", "redcap_event_name": "baseline_arm_1", "redcap_repeat_instrument": "visit", "redcap_repeat_instance": "2", "field_name": "adverse", "value": "1" },
+  { "record": "1", "redcap_event_name": "baseline_arm_1", "redcap_repeat_instrument": "visit", "redcap_repeat_instance": "2", "field_name": "visit_complete", "value": "2" },
+  { "record": "1", "redcap_event_name": "followup_arm_1", "redcap_repeat_instrument": "visit", "redcap_repeat_instance": "1", "field_name": "visit_date", "value": "2023-12-04" },
+  { "record": "1", "redcap_event_name": "followup_arm_1", "redcap_repeat_instrument": "visit", "redcap_repeat_instance": "1", "field_name": "systolic", "value": "121" },
+  { "record": "1", "redcap_event_name": "followup_arm_1", "redcap_repeat_instrument": "visit", "redcap_repeat_instance": "1", "field_name": "adverse", "value": "0" },
+  { "record": "1", "redcap_event_name": "followup_arm_1", "redcap_repeat_instrument": "visit", "redcap_repeat_instance": "1", "field_name": "visit_complete", "value": "1" },
+  { "record": "2", "redcap_event_name": "baseline_arm_2", "redcap_repeat_instrument": "", "redcap_repeat_instance": "", "field_name": "record_id", "value": "2" },
+  { "record": "2", "redcap_event_name": "baseline_arm_2", "redcap_repeat_instrument": "", "redcap_repeat_instance": "", "field_name": "sex", "value": "2" },
+  { "record": "2", "redcap_event_name": "baseline_arm_2", "redcap_repeat_instrument": "", "redcap_repeat_instance": "", "field_name": "demographics_complete", "value": "2" }
+]

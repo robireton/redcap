@@ -1,0 +1,23 @@
+[
+  {
+    "event_name": "Baseline",
+    "arm_num": 1,
+    "unique_event_name": "baseline_arm_1",
+    "custom_event_label": "",
+    "event_id": 101
+  },
+  {
+    "event_name": "Follow-up",
+    "arm_num": 1,
+    "unique_event_name": "followup_arm_1",
+    "custom_event_label": "",
+    "event_id": 102
+  },
+  {
+    "event_name": "Baseline",
+    "arm_num": 2,
+    "unique_event_name": "baseline_arm_2",
+    "custom_event_label": "",
+    "event_id": 201
+  }
+]

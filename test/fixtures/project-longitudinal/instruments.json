@@ -1,0 +1,10 @@
+[
+  {
+    "instrument_name": "demographics",
+    "instrument_label": "Demographics"
+  },
+  {
+    "instrument_name": "visit",
+    "instrument_label": "Study Visit"
+  }
+]

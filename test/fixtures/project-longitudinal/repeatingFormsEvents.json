@@ -1,0 +1,4 @@
+[
+  { "event_name": "baseline_arm_1", "form_name": "visit", "custom_form_label": "" },
+  { "event_name": "followup_arm_1", "form_name": "visit", "custom_form_label": "" }
+]
