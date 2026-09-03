@@ -8,6 +8,9 @@
     "esm"
   ],
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "exports": {
     ".": "./index.js",
     "./api": "./lib/api.js",
