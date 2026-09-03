@@ -26,6 +26,10 @@
     "lib/instrument.js",
     "lib/project.js"
   ],
+  "scripts": {
+    "lint": "eslint .",
+    "test": "node --test"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/robireton/redcap.git"

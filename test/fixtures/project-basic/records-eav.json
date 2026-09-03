@@ -1,0 +1,21 @@
+[
+  { "record": "1", "field_name": "record_id", "value": "1" },
+  { "record": "1", "field_name": "name", "value": "Ada Lovelace" },
+  { "record": "1", "field_name": "age", "value": "36" },
+  { "record": "1", "field_name": "weight", "value": "61.5" },
+  { "record": "1", "field_name": "dob", "value": "1815-12-10" },
+  { "record": "1", "field_name": "visit_dt", "value": "2024-03-01 14:30" },
+  { "record": "1", "field_name": "sex", "value": "2" },
+  { "record": "1", "field_name": "symptoms", "value": "1" },
+  { "record": "1", "field_name": "symptoms", "value": "3" },
+  { "record": "1", "field_name": "consent", "value": "1" },
+  { "record": "1", "field_name": "bmi", "value": "22.4" },
+  { "record": "1", "field_name": "demographics_complete", "value": "2" },
+  { "record": "2", "field_name": "record_id", "value": "2" },
+  { "record": "2", "field_name": "name", "value": "Grace Hopper" },
+  { "record": "2", "field_name": "age", "value": "45" },
+  { "record": "2", "field_name": "dob", "value": "1906-12-09" },
+  { "record": "2", "field_name": "sex", "value": "2" },
+  { "record": "2", "field_name": "consent", "value": "0" },
+  { "record": "2", "field_name": "demographics_complete", "value": "0" }
+]
