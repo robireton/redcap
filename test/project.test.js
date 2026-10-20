@@ -125,3 +125,11 @@ test('the raw eav data is available and insulated', async () => {
   project.data.splice(0)
   assert.equal(project.data.length, 19)
 })
+
+test('reads records split across a records-eav folder', async () => {
+  const split = await load('project-split')
+  const whole = await load('project-basic')
+
+  assert.deepEqual(split.data, whole.data)
+  assert.deepEqual(split.getInstrument('demographics').records, whole.getInstrument('demographics').records)
+})

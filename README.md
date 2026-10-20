@@ -65,9 +65,11 @@ for (const instrument of project.instruments) {
 
 If `endpoint`/`token` resolves to an existing directory, the project reads local JSON files from it instead of calling the API — see [offline mode](#offline-mode).
 
-### *async* `populate` ()
+### *async* `populate` (*options*)
 
 Fetches everything. **Must be awaited before any other member is used**; every getter and `getInstrument` throws `project not ready` until it resolves.
+
+Records are exported in batches with [`recordBatches`](#async-recordbatches-options-batching), so a large project does not exceed the JavaScript string limit. *options* may set `batchSize` (default `500` records per request).
 
 Longitudinal-only data (events, arms, form-event mapping) is fetched only when `info.isLongitudinal`, and repeating-forms data only when `info.hasRepeatingInstrumentsOrEvents`.
 
@@ -113,11 +115,13 @@ await project.populate()
 | `project.json` | `api.project()` | always |
 | `metadata.json` | `api.metadata()` | always |
 | `instruments.json` | `api.instruments()` | always |
-| `records-eav.json` | `api.records({ type: 'eav' })` | always |
+| `records-eav.json` | `api.records({ type: 'eav' })` | always — or the `records-eav/` folder below |
 | `events.json` | `api.events()` | longitudinal projects |
 | `arms.json` | `api.arms()` | longitudinal projects |
 | `formEventMapping.json` | `api.mapping()` | longitudinal projects |
 | `repeatingFormsEvents.json` | `api.repeating()` | projects with repeating instruments or events |
+
+If `records-eav.json` is absent, every `*.json` file in a `records-eav/` folder is read instead, in filename order, and the arrays are joined. Each file holds one batch from `api.recordBatches({ type: 'eav' })`. Use the folder when the export is too large to fit in one file: like a response, a single file can't be read past the string limit.
 
 Set `NODE_ENV=debug` to log each load step to the console.
 
@@ -346,6 +350,25 @@ An array of record objects.
 * `forms`: array of instrument names to pull (default: all)
 * `events`: array of unique event names to pull (longitudinal projects only)
 * more… *c.f.* full REDCap API specification
+
+#### *async* `recordBatches` (*options*, *batching*)
+
+An async generator that exports records a batch at a time. Each batch is an array of the kind `records` returns. Use it when one export is too large: a response is parsed as a single string, and JavaScript caps string length at about 512 MB. A `records` call that exceeds this throws a `RangeError` pointing here.
+
+```js
+for await (const batch of api.recordBatches({ type: 'eav' }, { batchSize: 500 })) {
+  // handle one batch at a time
+}
+```
+
+*options* are the same as for `records`. *batching* may set:
+
+* `batchSize`: records per request (default `500`); must be a positive integer
+* `idField`: the record ID field (default: the first field in `metadata()`)
+
+It first exports just the ID field, flat, to list the matching records. That request keeps your filters (`filterLogic`, `events`, date ranges, …) but not `fields`, `forms` or `type`. Duplicate IDs from repeating instruments and events are removed. Then it calls `records` with your *options* for each batch of IDs. If *options* already names `records`, those are batched directly and no ID export is made.
+
+Batches are separate requests, so records changed while the export runs may be inconsistent across batches. `records` itself never batches.
 
 #### *async* `instruments` ()
 
