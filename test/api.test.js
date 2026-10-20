@@ -116,6 +116,87 @@ test('every content type requests JSON except version', async () => {
   })
 })
 
+// a tiny REDCap: record 1 repeats, so the ID export returns it twice
+function batchServer (request, res) {
+  const params = Object.fromEntries(new URLSearchParams(request.body.toString('utf8')))
+  let body
+  if (params.content === 'metadata') {
+    body = [{ field_name: 'study_id' }, { field_name: 'age' }]
+  } else if (!('records[0]' in params)) {
+    body = ['1', '1', '2', '3', '4', '5'].map(id => ({ [params['fields[0]']]: id }))
+  } else {
+    body = Object.keys(params).filter(key => key.startsWith('records[')).map(key => ({ study_id: params[key] }))
+  }
+  res.writeHead(200, { 'Content-Type': 'application/json' })
+  res.end(JSON.stringify(body))
+}
+
+const collect = async batches => {
+  const result = []
+  for await (const batch of batches) result.push(batch.map(record => record.study_id))
+  return result
+}
+
+const parsed = request => Object.fromEntries(new URLSearchParams(request.body.toString('utf8')))
+
+test('recordBatches exports unique record IDs in batches', async () => {
+  await withServer(batchServer, async (endpoint, requests) => {
+    const api = new REDCapAPI(endpoint, 'SECRET')
+    const options = { type: 'eav', filterLogic: '[age] > 30', events: ['baseline_arm_1'], forms: ['demographics'], fields: ['age'] }
+    const batches = await collect(api.recordBatches(options, { batchSize: 2 }))
+
+    assert.deepEqual(batches, [['1', '2'], ['3', '4'], ['5']])
+    assert.deepEqual(options, { type: 'eav', filterLogic: '[age] > 30', events: ['baseline_arm_1'], forms: ['demographics'], fields: ['age'] })
+
+    const [metadata, ids, ...exports] = requests.map(parsed)
+    assert.equal(metadata.content, 'metadata')
+
+    assert.equal(ids.content, 'record')
+    assert.equal(ids.type, 'flat', 'the ID export must be flat to read the ID field')
+    assert.equal(ids['fields[0]'], 'study_id', 'the ID field defaults to the first metadata field')
+    assert.ok(!('fields[1]' in ids))
+    assert.ok(!('forms[0]' in ids), 'forms would add columns to the ID export')
+    assert.equal(ids.filterLogic, '[age] > 30')
+    assert.equal(ids['events[0]'], 'baseline_arm_1')
+
+    assert.equal(exports.length, 3)
+    for (const params of exports) {
+      assert.equal(params.type, 'eav')
+      assert.equal(params.filterLogic, '[age] > 30')
+      assert.equal(params['forms[0]'], 'demographics')
+      assert.equal(params['fields[0]'], 'age')
+    }
+  })
+})
+
+test('recordBatches uses a given idField without fetching metadata', async () => {
+  await withServer(batchServer, async (endpoint, requests) => {
+    const api = new REDCapAPI(endpoint, 'SECRET')
+    await collect(api.recordBatches({}, { idField: 'study_id' }))
+
+    assert.equal(parsed(requests[0]).content, 'record')
+    assert.equal(parsed(requests[0])['fields[0]'], 'study_id')
+    assert.equal(requests.length, 2, 'one ID export and one batch under the default size')
+  })
+})
+
+test('recordBatches batches the caller’s own records without an ID export', async () => {
+  await withServer(batchServer, async (endpoint, requests) => {
+    const api = new REDCapAPI(endpoint, 'SECRET')
+    const batches = await collect(api.recordBatches({ records: ['7', '8', '7', '9'] }, { batchSize: 2 }))
+
+    assert.deepEqual(batches, [['7', '8'], ['9']])
+    assert.equal(requests.length, 2)
+  })
+})
+
+test('recordBatches rejects a bad batchSize', async () => {
+  const api = new REDCapAPI('https://example.invalid/api/', 'SECRET')
+  for (const batchSize of [0, -1, 1.5, '10']) {
+    await assert.rejects(() => api.recordBatches({}, { batchSize }).next(), RangeError)
+  }
+})
+
 test('a non-ok response throws with the status', async () => {
   await withServer((request, res) => {
     res.writeHead(403, 'Forbidden')

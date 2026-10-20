@@ -4,10 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-`@robireton/redcap` — a zero-dependency ESM npm library of classes for interacting with [REDCap](https://projectredcap.org/) research projects via its JSON API. Node built-ins only (fetch, fs); no runtime dependencies. There is no build step and no test suite.
+`@robireton/redcap` — a zero-dependency ESM npm library of classes for interacting with [REDCap](https://projectredcap.org/) research projects via its JSON API. Node built-ins only (fetch, fs); no runtime dependencies. There is no build step. Tests use Node's built-in runner (`npm test`); API tests run a real `node:http` server, and `test/fixtures/` holds offline-mode projects.
 
 ## Commands
 
+- Test: `npm test` (`node --test`)
 - Lint: `npx eslint .` (config is [eslint.config.js](eslint.config.js), using neostandard — the successor to standard style: no semicolons, 2-space indent, space before function parens)
 
 ## Architecture
@@ -18,7 +19,7 @@ Two layers:
 
 1. **REDCapAPI** ([lib/api.js](lib/api.js)) — thin, stateless HTTP wrapper over the REDCap API. Every method POSTs form-encoded params to a single endpoint with a per-project `token`, distinguished by a `content` parameter (`record`, `metadata`, `instrument`, …), always requesting JSON.
 
-2. **REDCapProject** ([lib/project.js](lib/project.js)) — stateful model of a whole project. Its constructor takes the same `(endpoint, token)` pair; if `path.resolve(endpoint, token)` is an existing directory, it reads canonically-named JSON files from that folder (`project.json`, `metadata.json`, `records-eav.json`, `instruments.json`, etc.) instead of calling the API — this filesystem mode doubles as the offline/testing path. `await populate()` must be called before any getter; getters throw `'project not ready'` otherwise. Longitudinal-only data (arms, events, mapping) and repeating-forms data are fetched conditionally based on project info flags.
+2. **REDCapProject** ([lib/project.js](lib/project.js)) — stateful model of a whole project. Its constructor takes the same `(endpoint, token)` pair; if `path.resolve(endpoint, token)` is an existing directory, it reads canonically-named JSON files from that folder (`project.json`, `metadata.json`, `records-eav.json` or a `records-eav/` folder of batch files, `instruments.json`, etc.) instead of calling the API — this filesystem mode doubles as the offline/testing path. `await populate()` must be called before any getter; getters throw `'project not ready'` otherwise. Longitudinal-only data (arms, events, mapping) and repeating-forms data are fetched conditionally based on project info flags.
 
 Supporting value classes wrap raw REDCap objects in private fields with getters:
 
@@ -27,7 +28,7 @@ Supporting value classes wrap raw REDCap objects in private fields with getters:
 - **REDCapProjectInformation** ([lib/info.js](lib/info.js)) — project settings with camelCase getters (e.g. `isLongitudinal`).
 - **REDCapDatetime** ([lib/datetime.js](lib/datetime.js)) — `Date` subclass that parses/formats REDCap's `YYYY-MM-DD hh:mm:ss` format.
 
-Records flow as REDCap "eav" format (one observation per row) internally; `REDCapInstrument` is where they become flat per-record objects.
+`REDCapAPI.recordBatches()` exports records in batches (ID export first, then `records` per batch) to stay under V8's ~512 MB string limit; `populate()` always loads records through it. Records flow as REDCap "eav" format (one observation per row) internally; `REDCapInstrument` is where they become flat per-record objects.
 
 Debug logging in `REDCapProject` prints only when `NODE_ENV=debug`.
 
